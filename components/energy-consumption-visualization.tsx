@@ -60,10 +60,10 @@ interface BlockProps {
 const Block: React.FC<BlockProps> = ({ color, size = 'small' }) => (
   <div 
     className={`
-      ${size === 'small' ? 'w-2 h-2' : 'w-4 h-4'} 
+      ${size === 'small' ? 'w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3' : 'w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5'} 
       bg-gradient-to-br ${color} 
       border border-gray-400 
-      m-[3px] 
+      m-[2px] sm:m-[3px] 
       inline-block 
       transition-all duration-300 ease-in-out 
       hover:scale-110
@@ -79,7 +79,7 @@ interface PartialBlockProps {
 
 const PartialBlock: React.FC<PartialBlockProps> = ({ fraction, color }) => (
   <div 
-    className="w-2 h-2 border border-gray-400 m-[3px] inline-block relative overflow-hidden transition-all duration-300 ease-in-out hover:scale-110"
+    className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 border border-gray-400 m-[2px] sm:m-[3px] inline-block relative overflow-hidden transition-all duration-300 ease-in-out hover:scale-110"
     aria-hidden="true"
   >
     <div
@@ -105,7 +105,7 @@ const EnergyItem: React.FC<EnergyItemProps> = ({ label, value, blocks, color, ne
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="mb-4 py-2 border-b border-gray-200 last:border-b-0">
+          <div className="mb-6 py-2 border-b border-gray-200 last:border-b-0"> {/* Increased mb-4 to mb-8 */}
             <div className="text-sm mb-2 flex items-center justify-between">
               <span className="font-semibold text-gray-800">{label}</span>
               {equivalency && nextColor && (
@@ -139,7 +139,7 @@ const EnergyItem: React.FC<EnergyItemProps> = ({ label, value, blocks, color, ne
 };
 
 const Legend = () => (
-  <div className="flex flex-wrap justify-center gap-4 mt-6">
+  <div className="flex flex-wrap justify-center gap-4 mt-10">
     {Object.entries(colorScheme).map(([scale, color]) => (
       <div key={scale} className="flex items-center">
         <Block color={color} size="large" />
@@ -152,10 +152,10 @@ const Legend = () => (
 export function EnergyConsumptionVisualizationComponent() {
   return (
     <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 font-sans text-sm mx-auto max-w-7xl">
-      <h1 className="text-4xl font-bold mb-2 text-center text-gray-800">
+      <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">
         GPU &quot;Napkin Math&quot;
       </h1>
-      <p className="text-lg text-gray-600 text-center mb-4"> 
+      <p className="text-lg text-gray-600 text-center mb-8"> 
         How fast is energy consumption in LLMs growing?
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -188,7 +188,7 @@ export function EnergyConsumptionVisualizationComponent() {
         ))}
       </div>
       <Legend />
-      <div className="mt-8 text-sm text-gray-600 text-center">
+      <div className="mt-6 text-sm text-gray-600 text-center">
         <p>Inspired by <a href="https://github.com/chubin/late.nz" className="text-blue-600 hover:underline">github.com/chubin/late.nz</a> [MIT License]</p>
         <p>And from &quot;Jeff Dean&apos;s latency numbers&quot;</p>
       </div>
