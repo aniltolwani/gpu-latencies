@@ -153,7 +153,7 @@ export function EnergyConsumptionVisualizationComponent() {
   return (
     <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 font-sans text-sm mx-auto max-w-7xl">
       <h1 className="text-4xl font-bold mb-2 text-center text-gray-800">
-        GPU "Napkin Math"
+        GPU &quot;Napkin Math&quot;
       </h1>
       <p className="text-lg text-gray-600 text-center mb-4"> 
         How fast is energy consumption in LLMs growing?
@@ -190,7 +190,7 @@ export function EnergyConsumptionVisualizationComponent() {
       <Legend />
       <div className="mt-8 text-sm text-gray-600 text-center">
         <p>Inspired by <a href="https://github.com/chubin/late.nz" className="text-blue-600 hover:underline">github.com/chubin/late.nz</a> [MIT License]</p>
-        <p>And from "Jeff Dean's latency numbers"</p>
+        <p>And from &quot;Jeff Dean&apos;s latency numbers&quot;</p>
       </div>
     </div>
   );
