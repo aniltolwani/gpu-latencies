@@ -42,11 +42,11 @@ const energyData = [
 ];
 
 const Block = ({ color }: { color: string }) => (
-  <div className={`w-2 h-2 ${color} border border-gray-400 m-px inline-block`} />
+  <div className={`w-2 h-2 ${color} border border-gray-400 m-[0.5px] inline-block`} />
 );
 
 const PartialBlock = ({ fraction, color }: { fraction: number; color: string }) => (
-  <div className={`w-2 h-2 border border-gray-400 m-px inline-block relative overflow-hidden`}>
+  <div className={`w-2 h-2 border border-gray-400 m-[0.5px] inline-block relative overflow-hidden`}>
     <div
       className={`${color} absolute bottom-0 left-0 right-0`}
       style={{ height: `${fraction * 100}%` }}
@@ -55,10 +55,10 @@ const PartialBlock = ({ fraction, color }: { fraction: number; color: string }) 
 );
 
 const BlockGrid = ({ color, count }: { color: string; count: number }) => (
-  <div className="inline-block m-1 border border-gray-400 p-px">
-    <div className="grid grid-cols-10 gap-px w-12 h-12">
+  <div className="inline-block m-[0.5px] border border-gray-400">
+    <div className="grid grid-cols-10 gap-[0.5px] w-[30px] h-[30px]">
       {Array(100).fill(0).map((_, i) => (
-        <div key={i} className={`w-1 h-1 ${i < count ? color : 'bg-gray-100'}`} />
+        <div key={i} className={`w-[2px] h-[2px] ${i < count ? color : 'bg-gray-100'}`} />
       ))}
     </div>
   </div>
@@ -86,6 +86,7 @@ const EnergyItem = ({
   const fractionalPart = blocks % 1;
 
   const getUnit = (blocks: number) => {
+    if (blocks >= 1e12) return 'PWh';
     if (blocks >= 1e9) return 'TWh';
     if (blocks >= 1e6) return 'GWh';
     if (blocks >= 1e3) return 'MWh';
@@ -93,6 +94,7 @@ const EnergyItem = ({
   };
 
   const formatBlocks = (blocks: number) => {
+    if (blocks >= 1e12) return (blocks / 1e12).toFixed(3);
     if (blocks >= 1e9) return (blocks / 1e9).toFixed(3);
     if (blocks >= 1e6) return (blocks / 1e6).toFixed(3);
     if (blocks >= 1e3) return (blocks / 1e3).toFixed(3);
@@ -103,22 +105,22 @@ const EnergyItem = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="mb-8 py-2"> {/* Updated: increased margin-bottom and added padding-y */}
-            <div className="text-xs mb-2 flex items-center"> {/* Updated: increased margin-bottom */}
-              <span className="mr-1">{label}</span>
+          <div className="mb-6 py-2 border-b border-gray-200 last:border-b-0">
+            <div className="text-xs mb-2 flex items-center justify-between">
+              <span className="font-semibold">{label}</span>
               {equivalency && nextColor && (
                 <span className="flex items-center">
                   <span className="mx-2">=</span>
                   <Block color={nextColor} />
                 </span>
               )}
-              {value && !equivalency && <span className="ml-1">({value})</span>}
+              {value && !equivalency && <span className="text-gray-500">({value})</span>}
             </div>
             <div className="flex flex-wrap items-end">
               {blocks >= 100 ? (
                 <>
                   {Array(Math.ceil(fullGrids / 10)).fill(0).map((_, rowIndex) => (
-                    <div key={rowIndex} className="flex flex-wrap w-full">
+                    <div key={rowIndex} className="flex flex-wrap w-full mb-1">
                       {Array(Math.min(10, fullGrids - rowIndex * 10)).fill(0).map((_, i) => (
                         <BlockGrid key={i} color={color} count={100} />
                       ))}
@@ -156,20 +158,20 @@ const EnergyItem = ({
 
 export function EnergyConsumptionVisualizationComponent() {
   return (
-    <div className="p-4 bg-white font-mono text-sm mx-auto">
-      <h2 className="text-lg font-bold mb-6"> {/* Updated: increased margin-bottom */}
-        Energy
+    <div className="p-6 bg-white font-mono text-sm mx-auto max-w-7xl">
+      <h2 className="text-2xl font-bold mb-8 text-center">
+        Energy Consumption Visualization
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"> {/* Updated: increased gap */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
         {energyData.map((column, colIndex) => (
-          <div key={colIndex} className="space-y-4"> {/* Updated: increased space-y */}
+          <div key={colIndex} className="space-y-4 bg-gray-50 p-4 rounded-lg shadow-sm">
             {column.map((item, itemIndex) => (
               <EnergyItem key={itemIndex} {...item} />
             ))}
           </div>
         ))}
       </div>
-      <div className="mt-4 text-xs text-gray-600">
+      <div className="mt-8 text-xs text-gray-600 text-center">
         <p>[github.com/chubin/late.nz] [MIT License]</p>
         <p>Adapted from "Jeff Dean's latency numbers"</p>
         <p>Original: [github.com/colin-scott/interactive_latencies]</p>
