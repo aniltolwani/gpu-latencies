@@ -13,13 +13,14 @@ const energyData = [
     { label: '1 Laptop (Daily Usage)', value: '~0.2 kWh', blocks: 0.2, color: 'bg-green-300' },
     { label: 'Single GPU (H100, per hour)', value: '~0.7 kWh', blocks: 0.7, color: 'bg-green-300' },
     { label: 'GPT-1 Training', value: '100 kWh', blocks: 100, color: 'bg-green-300'},
-    { label: '1000 kWh', value: '1000 kWh', blocks: 1000, color: 'bg-green-300', nextColor: 'bg-blue-300', scale: true, equivalency: true },
+    { label: '1000 kWh', value: '1000 kWh', blocks: 1000, color: 'bg-blue-300', nextColor: 'bg-blue-300', scale: true, equivalency: true },
   ],
   // Column 2: MWh (Medium scale)
   [
     { label: '1 MWh', blocks: 1, color: 'bg-blue-300', scale: true },
     { label: 'GPT-2 Training', value: '1 MWh', blocks: 1, color: 'bg-blue-300' },
     { label: '1 US Home (Annual)', value: '~10 MWh', blocks: 10, color: 'bg-blue-300' },
+    { label: 'Average Academic AI Research Center (100 H100s, per year)', value: '~613 MWh', blocks: 613, color: 'bg-blue-300' },
     { label: '1000 MWh', value: '1000 MWh', blocks: 1000, color: 'bg-blue-300', nextColor: 'bg-yellow-300', scale: true, equivalency: true },
   ],
   // Column 3: GWh (Large scale)
@@ -34,6 +35,7 @@ const energyData = [
   [
     { label: '1 TWh', blocks: 1, color: 'bg-red-300', scale: true },
     { label: 'OpenAI 2025 Cluster (Estimate)', value: '~100 TWh', blocks: 100, color: 'bg-red-300' },
+    { label: 'Meta Cluster (350k H100s, Annual)', value: '~2.15 TWh', blocks: 2.15, color: 'bg-red-300' },
     { label: '1000 TWh', value: '1000 TWh', blocks: 1000, color: 'bg-red-300', nextColor: 'bg-purple-300', scale: true, equivalency: true },
   ],
   // Column 5: PWh (Extreme scale)
