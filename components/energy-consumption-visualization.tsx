@@ -79,7 +79,7 @@ interface PartialBlockProps {
 
 const PartialBlock: React.FC<PartialBlockProps> = ({ fraction, color }) => (
   <div 
-    className={`w-2.5 h-2.5 md:w-3 md:h-3 border border-gray-400 m-0.5 inline-block relative overflow-hidden transition-all duration-300 ease-in-out hover:scale-110`}
+    className={`w-2.5 h-2.5 md:w-3 md:h-3 border border-gray-400 m-[3px] inline-block relative overflow-hidden transition-all duration-300 ease-in-out hover:scale-110`}
     aria-hidden="true"
   >
     <div
