@@ -10,7 +10,7 @@ const energyData = [
     { label: '1 Laptop (Daily Usage)', value: '~0.2 kWh', blocks: 0.2, color: 'bg-green-300' },
     { label: 'Single GPU (H100, per hour)', value: '~0.7 kWh', blocks: 0.7, color: 'bg-green-300' },
     { label: 'GPT-1 Training', value: '100 kWh', blocks: 100, color: 'bg-green-300'},
-    { label: '1000 kWh', value: '1000 kWh', blocks: 1000, color: 'bg-green-300', nextColor: 'bg-blue-300', scale: true, equivalency: true },
+    { label: '1000 kWh', value: '1000 kWh', blocks: 1000, color: 'bg-blue-300', nextColor: 'bg-blue-300', scale: true, equivalency: true },
   ],
   // Column 2: MWh (Medium scale)
   [
@@ -70,7 +70,6 @@ const EnergyItem = ({
   blocks,
   color,
   nextColor,
-  scale,
   equivalency,
 }: {
   label: string;
@@ -78,7 +77,6 @@ const EnergyItem = ({
   blocks: number;
   color: string;
   nextColor?: string;
-  scale?: boolean;
   equivalency?: boolean;
 }) => {
   const fullGrids = Math.floor(blocks / 100);
@@ -173,7 +171,7 @@ export function EnergyConsumptionVisualizationComponent() {
       </div>
       <div className="mt-8 text-xs text-gray-600 text-center">
         <p>[github.com/chubin/late.nz] [MIT License]</p>
-        <p>Adapted from "Jeff Dean's latency numbers"</p>
+        <p>Adapted from &quot;Jeff Dean&apos;s latency numbers&quot;</p>
         <p>Original: [github.com/colin-scott/interactive_latencies]</p>
       </div>
     </div>
