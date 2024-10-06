@@ -60,10 +60,10 @@ interface BlockProps {
 const Block: React.FC<BlockProps> = ({ color, size = 'small' }) => (
   <div 
     className={`
-      ${size === 'small' ? 'w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3' : 'w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5'} 
+      ${size === 'small' ? 'w-2.5 h-2.5 md:w-3 md:h-3' : 'w-2 h-2 md:w-4 md:h-4'} 
       bg-gradient-to-br ${color} 
       border border-gray-400 
-      m-[2px] sm:m-[3px] 
+      m-[3px]
       inline-block 
       transition-all duration-300 ease-in-out 
       hover:scale-110
@@ -79,7 +79,7 @@ interface PartialBlockProps {
 
 const PartialBlock: React.FC<PartialBlockProps> = ({ fraction, color }) => (
   <div 
-    className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 border border-gray-400 m-[2px] sm:m-[3px] inline-block relative overflow-hidden transition-all duration-300 ease-in-out hover:scale-110"
+    className={`w-2.5 h-2.5 md:w-3 md:h-3 border border-gray-400 m-0.5 inline-block relative overflow-hidden transition-all duration-300 ease-in-out hover:scale-110`}
     aria-hidden="true"
   >
     <div
@@ -105,16 +105,16 @@ const EnergyItem: React.FC<EnergyItemProps> = ({ label, value, blocks, color, ne
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="mb-6 py-2 border-b border-gray-200 last:border-b-0"> {/* Increased mb-4 to mb-8 */}
-            <div className="text-sm mb-2 flex items-center justify-between">
+          <div className="mb-4 py-1.5 border-b border-gray-200 last:border-b-0">
+            <div className="text-xs mb-1.5 flex items-center justify-between">
               <span className="font-semibold text-gray-800">{label}</span>
               {equivalency && nextColor && (
                 <span className="flex items-center">
-                  <span className="mx-2">=</span>
+                  <span className="mx-1.5">=</span>
                   <Block color={nextColor} />
                 </span>
               )}
-              {value && !equivalency && <span className="text-gray-600">({value})</span>}
+              {value && !equivalency && <span className="text-gray-600 text-[10px]">({value})</span>}
             </div>
             <div className="flex flex-wrap items-end">
               <div className="flex flex-wrap">
@@ -129,7 +129,7 @@ const EnergyItem: React.FC<EnergyItemProps> = ({ label, value, blocks, color, ne
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          <p>
+          <p className="text-xs">
             {label}{value ? `: ${value}` : ''}
           </p>
         </TooltipContent>
@@ -139,11 +139,11 @@ const EnergyItem: React.FC<EnergyItemProps> = ({ label, value, blocks, color, ne
 };
 
 const Legend = () => (
-  <div className="flex flex-wrap justify-center gap-4 mt-10">
+  <div className="flex flex-wrap justify-center gap-3 mt-7">
     {Object.entries(colorScheme).map(([scale, color]) => (
       <div key={scale} className="flex items-center">
         <Block color={color} size="large" />
-        <span className="ml-2 text-sm">{scale}</span>
+        <span className="ml-1.5 text-xs">{scale}</span>
       </div>
     ))}
   </div>
@@ -151,22 +151,22 @@ const Legend = () => (
 
 export function EnergyConsumptionVisualizationComponent() {
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 font-sans text-sm mx-auto max-w-7xl">
-      <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">
+    <div className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 font-sans text-xs mx-auto max-w-7xl">
+      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
         GPU &quot;Napkin Math&quot;
       </h1>
-      <p className="text-lg text-gray-600 text-center mb-8"> 
+      <p className="text-base text-gray-600 text-center mb-6"> 
         How fast is energy consumption in LLMs growing?
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {energyData.map((column, colIndex) => (
           <Card key={colIndex} className="overflow-hidden">
-            <CardHeader className="bg-gradient-to-br from-gray-100 to-gray-200 p-4">
-              <div className="text-2xl font-bold mb-2 text-center text-gray-700 flex items-center justify-center">
-                <span className="mr-2">{['kWh', 'MWh', 'GWh', 'TWh', 'PWh'][colIndex]}</span>
+            <CardHeader className="bg-gradient-to-br from-gray-100 to-gray-200 p-3">
+              <div className="text-xl font-bold mb-1.5 text-center text-gray-700 flex items-center justify-center">
+                <span className="mr-1.5">{['kWh', 'MWh', 'GWh', 'TWh', 'PWh'][colIndex]}</span>
                 <Block color={colorScheme[['kWh', 'MWh', 'GWh', 'TWh', 'PWh'][colIndex] as keyof typeof colorScheme]} size="large" />
               </div>
-              <div className="text-sm font-normal text-gray-600 text-center whitespace-nowrap overflow-hidden text-overflow-ellipsis">
+              <div className="text-xs font-normal text-gray-600 text-center whitespace-nowrap overflow-hidden text-overflow-ellipsis">
                 {colIndex === 0 ? '1 kWh = 1 Block' :
                  colIndex === 1 ? '1 MWh = 1,000 kWh' :
                  colIndex === 2 ? '1 GWh = 1,000 MWh' :
@@ -174,7 +174,7 @@ export function EnergyConsumptionVisualizationComponent() {
                  '1 PWh = 1,000 TWh'}
               </div>
             </CardHeader>
-            <CardContent className="p-4">
+            <CardContent className="p-3">
               {column.slice(1).map((item, itemIndex) => (
                 <EnergyItem 
                   key={itemIndex} 
@@ -188,7 +188,7 @@ export function EnergyConsumptionVisualizationComponent() {
         ))}
       </div>
       <Legend />
-      <div className="mt-6 text-sm text-gray-600 text-center">
+      <div className="mt-4 text-xs text-gray-600 text-center">
         <p>Inspired by <a href="https://github.com/chubin/late.nz" className="text-blue-600 hover:underline">github.com/chubin/late.nz</a> [MIT License]</p>
         <p>And from &quot;Jeff Dean&apos;s latency numbers&quot;</p>
       </div>
