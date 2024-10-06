@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Card, CardHeader, CardContent } from "@/components/ui/card"
 
 // Data structure for energy consumption visualization
 // Each array represents a column, and each object within the array represents an energy item
@@ -13,30 +14,27 @@ const energyData = [
     { label: '1 Laptop (Daily Usage)', value: '~0.2 kWh', blocks: 0.2, color: 'bg-green-300' },
     { label: 'Single GPU (H100, per hour)', value: '~0.7 kWh', blocks: 0.7, color: 'bg-green-300' },
     { label: 'GPT-1 Training', value: '100 kWh', blocks: 100, color: 'bg-green-300'},
-    { label: '1000 kWh', value: '1000 kWh', blocks: 1000, color: 'bg-blue-300', nextColor: 'bg-blue-300', scale: true, equivalency: true },
   ],
   // Column 2: MWh (Medium scale)
   [
     { label: '1 MWh', blocks: 1, color: 'bg-blue-300', scale: true },
-    { label: 'GPT-2 Training', value: '1 MWh', blocks: 1, color: 'bg-blue-300' },
+    { label: 'GPT-2 Training', value: '1 MWh', blocks: 1.2, color: 'bg-blue-300' },
     { label: '1 US Home (Annual)', value: '~10 MWh', blocks: 10, color: 'bg-blue-300' },
-    { label: 'Average Academic AI Research Center (100 H100s, per year)', value: '~613 MWh', blocks: 613, color: 'bg-blue-300' },
-    { label: '1000 MWh', value: '1000 MWh', blocks: 1000, color: 'bg-blue-300', nextColor: 'bg-yellow-300', scale: true, equivalency: true },
+    { label: 'Geohotz Tinybox Pro', value: '~70 MWh', blocks: 70, color: 'bg-blue-300' },
   ],
   // Column 3: GWh (Large scale)
   [
     { label: '1 GWh', blocks: 1, color: 'bg-yellow-300', scale: true },
+    { label: 'Stanford Natural Language Computing (64 H100, annual) ', value: '~392 MWh', blocks: .392, color: 'bg-blue-300' },
     { label: 'GPT-3 Training', value: '1.287 GWh', blocks: 1.287, color: 'bg-yellow-300'},
     { label: 'GPT-4 Training (Estimate)', value: '10 GWh', blocks: 10, color: 'bg-yellow-300' },
     { label: 'Small City (Annual)', value: '~20 GWh', blocks: 20, color: 'bg-yellow-300'},
-    { label: '1000 GWh', value: '1000 GWh', blocks: 1000, color: 'bg-yellow-300', nextColor: 'bg-red-300', scale: true, equivalency: true },
   ],
   // Column 4: TWh (Massive scale)
   [
     { label: '1 TWh', blocks: 1, color: 'bg-red-300', scale: true },
-    { label: 'OpenAI 2025 Cluster (Estimate)', value: '~100 TWh', blocks: 100, color: 'bg-red-300' },
     { label: 'Meta Cluster (350k H100s, Annual)', value: '~2.15 TWh', blocks: 2.15, color: 'bg-red-300' },
-    { label: '1000 TWh', value: '1000 TWh', blocks: 1000, color: 'bg-red-300', nextColor: 'bg-purple-300', scale: true, equivalency: true },
+    { label: 'OpenAI 2025 Cluster (Estimate)', value: '~100 TWh', blocks: 100, color: 'bg-red-300' },
   ],
   // Column 5: PWh (Extreme scale)
   [
@@ -46,105 +44,87 @@ const energyData = [
   ],
 ];
 
-// Component to render a single colored block
-const Block = ({ color }: { color: string }) => (
-  <div className={`w-2 h-2 ${color} border border-gray-400 m-[0.5px] inline-block`} />
+const colorScheme = {
+  kWh: 'from-green-300 to-green-400',
+  MWh: 'from-blue-300 to-blue-400',
+  GWh: 'from-yellow-300 to-yellow-400',
+  TWh: 'from-red-300 to-red-400',
+  PWh: 'from-purple-300 to-purple-400',
+};
+
+interface BlockProps {
+  color: string;
+  size?: 'small' | 'large';
+}
+
+const Block: React.FC<BlockProps> = ({ color, size = 'small' }) => (
+  <div 
+    className={`
+      ${size === 'small' ? 'w-2 h-2' : 'w-4 h-4'} 
+      bg-gradient-to-br ${color} 
+      border border-gray-400 
+      m-[3px] 
+      inline-block 
+      transition-all duration-300 ease-in-out 
+      hover:scale-110
+    `} 
+    aria-hidden="true"
+  />
 );
 
-// Component to render a partially filled block
-const PartialBlock = ({ fraction, color }: { fraction: number; color: string }) => (
-  <div className={`w-2 h-2 border border-gray-400 m-[0.5px] inline-block relative overflow-hidden`}>
+interface PartialBlockProps {
+  fraction: number;
+  color: string;
+}
+
+const PartialBlock: React.FC<PartialBlockProps> = ({ fraction, color }) => (
+  <div 
+    className="w-2 h-2 border border-gray-400 m-[3px] inline-block relative overflow-hidden transition-all duration-300 ease-in-out hover:scale-110"
+    aria-hidden="true"
+  >
     <div
-      className={`${color} absolute bottom-0 left-0 right-0`}
+      className={`bg-gradient-to-br ${color} absolute bottom-0 left-0 right-0`}
       style={{ height: `${fraction * 100}%` }}
     />
   </div>
 );
 
-// Component to render a grid of 100 blocks, with a specified number of them colored
-const BlockGrid = ({ color, count }: { color: string; count: number }) => (
-  <div className="inline-block m-[0.5px] border border-gray-400">
-    <div className="grid grid-cols-10 gap-[0.5px] w-[30px] h-[30px]">
-      {Array(100).fill(0).map((_, i) => (
-        <div key={i} className={`w-[2px] h-[2px] ${i < count ? color : 'bg-gray-100'}`} />
-      ))}
-    </div>
-  </div>
-);
-
-// Component to render a single energy item with its label, value, and visual representation
-const EnergyItem = ({
-  label,
-  value,
-  blocks,
-  color,
-  nextColor,
-  equivalency,
-}: {
+interface EnergyItemProps {
   label: string;
   value?: string;
   blocks: number;
   color: string;
   nextColor?: string;
   equivalency?: boolean;
-}) => {
-  // Calculate the number of full grids, remaining blocks, and fractional part
-  const fullGrids = Math.floor(blocks / 100);
-  const remainingBlocks = Math.floor(blocks % 100);
+}
+
+const EnergyItem: React.FC<EnergyItemProps> = ({ label, value, blocks, color, nextColor, equivalency }) => {
   const fractionalPart = blocks % 1;
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="mb-6 py-2 border-b border-gray-200 last:border-b-0">
-            {/* Render the label and value */}
-            <div className="text-xs mb-2 flex items-center justify-between">
-              <span className="font-semibold">{label}</span>
+          <div className="mb-4 py-2 border-b border-gray-200 last:border-b-0">
+            <div className="text-sm mb-2 flex items-center justify-between">
+              <span className="font-semibold text-gray-800">{label}</span>
               {equivalency && nextColor && (
                 <span className="flex items-center">
                   <span className="mx-2">=</span>
                   <Block color={nextColor} />
                 </span>
               )}
-              {value && !equivalency && <span className="text-gray-500">({value})</span>}
+              {value && !equivalency && <span className="text-gray-600">({value})</span>}
             </div>
-            {/* Render the visual representation of energy consumption */}
             <div className="flex flex-wrap items-end">
-              {blocks >= 100 ? (
-                <>
-                  {/* First row: up to 5 full grids */}
-                  <div className="flex flex-wrap w-full mb-1">
-                    {Array(Math.min(5, fullGrids)).fill(0).map((_, i) => (
-                      <BlockGrid key={i} color={color} count={100} />
-                    ))}
-                  </div>
-                  {/* Second row: remaining full grids and partial grid */}
-                  {fullGrids > 5 && (
-                    <div className="flex flex-wrap w-full">
-                      {Array(fullGrids - 5).fill(0).map((_, i) => (
-                        <BlockGrid key={i} color={color} count={100} />
-                      ))}
-                      {remainingBlocks > 0 && (
-                        <BlockGrid color={color} count={remainingBlocks} />
-                      )}
-                      {fractionalPart > 0 && (
-                        <PartialBlock fraction={fractionalPart} color={color} />
-                      )}
-                    </div>
-                  )}
-                </>
-              ) : (
-                // Render individual blocks for small values
-                <div className="flex flex-wrap">
-                  {Array(Math.floor(blocks)).fill(0).map((_, i) => (
-                    <Block key={i} color={color} />
-                  ))}
-                  {fractionalPart > 0 && (
-                    <PartialBlock key="partial" fraction={fractionalPart} color={color} />
-                  )}
-                </div>
-              )}
+              <div className="flex flex-wrap">
+                {Array(Math.floor(blocks)).fill(0).map((_, i) => (
+                  <Block key={i} color={color} />
+                ))}
+                {fractionalPart > 0 && (
+                  <PartialBlock key="partial" fraction={fractionalPart} color={color} />
+                )}
+              </div>
             </div>
           </div>
         </TooltipTrigger>
@@ -158,33 +138,59 @@ const EnergyItem = ({
   );
 };
 
-// Main component for rendering the entire energy consumption visualization
+const Legend = () => (
+  <div className="flex flex-wrap justify-center gap-4 mt-6">
+    {Object.entries(colorScheme).map(([scale, color]) => (
+      <div key={scale} className="flex items-center">
+        <Block color={color} size="large" />
+        <span className="ml-2 text-sm">{scale}</span>
+      </div>
+    ))}
+  </div>
+);
+
 export function EnergyConsumptionVisualizationComponent() {
   return (
-    // Main container: white background, centered, with max width
-    <div className="p-6 bg-white font-mono text-sm mx-auto max-w-7xl">
-      {/* Title of the visualization */}
-      <h2 className="text-2xl font-bold mb-8 text-center">
-        GPU Napkin Math
-      </h2>
-      {/* Grid container for energy data columns */}
-      {/* Responsive layout: 1 column on small screens, up to 5 columns on extra large screens */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+    <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 font-sans text-sm mx-auto max-w-7xl">
+      <h1 className="text-4xl font-bold mb-2 text-center text-gray-800">
+        GPU "Napkin Math"
+      </h1>
+      <p className="text-lg text-gray-600 text-center mb-4"> 
+        How fast is energy consumption in LLMs growing?
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {energyData.map((column, colIndex) => (
-          // Individual column container: light gray background with rounded corners and shadow
-          <div key={colIndex} className="space-y-4 bg-gray-50 p-4 rounded-lg shadow-sm">
-            {column.map((item, itemIndex) => (
-              // Render each energy item within the column
-              <EnergyItem key={itemIndex} {...item} />
-            ))}
-          </div>
+          <Card key={colIndex} className="overflow-hidden">
+            <CardHeader className="bg-gradient-to-br from-gray-100 to-gray-200 p-4">
+              <div className="text-2xl font-bold mb-2 text-center text-gray-700 flex items-center justify-center">
+                <span className="mr-2">{['kWh', 'MWh', 'GWh', 'TWh', 'PWh'][colIndex]}</span>
+                <Block color={colorScheme[['kWh', 'MWh', 'GWh', 'TWh', 'PWh'][colIndex] as keyof typeof colorScheme]} size="large" />
+              </div>
+              <div className="text-sm font-normal text-gray-600 text-center whitespace-nowrap overflow-hidden text-overflow-ellipsis">
+                {colIndex === 0 ? '1 kWh = 1 Block' :
+                 colIndex === 1 ? '1 MWh = 1,000 kWh' :
+                 colIndex === 2 ? '1 GWh = 1,000 MWh' :
+                 colIndex === 3 ? '1 TWh = 1,000 GWh' :
+                 '1 PWh = 1,000 TWh'}
+              </div>
+            </CardHeader>
+            <CardContent className="p-4">
+              {column.slice(1).map((item, itemIndex) => (
+                <EnergyItem 
+                  key={itemIndex} 
+                  {...item} 
+                  color={colorScheme[['kWh', 'MWh', 'GWh', 'TWh', 'PWh'][colIndex] as keyof typeof colorScheme]} 
+                  nextColor={colorScheme[['MWh', 'GWh', 'TWh', 'PWh', 'PWh'][colIndex] as keyof typeof colorScheme]}
+                />
+              ))}
+            </CardContent>
+          </Card>
         ))}
       </div>
-      {/* Attribution and source information container */}
-      {/* Small, centered text in gray */}
-      <div className="mt-8 text-xs text-gray-600 text-center">
-        <p>Inspired by [github.com/chubin/late.nz] [MIT License]</p>
-        <p>And from &quot;Jeff Dean&apos;s latency numbers&quot;</p>
+      <Legend />
+      <div className="mt-8 text-sm text-gray-600 text-center">
+        <p>Inspired by <a href="https://github.com/chubin/late.nz" className="text-blue-600 hover:underline">github.com/chubin/late.nz</a> [MIT License]</p>
+        <p>And from "Jeff Dean's latency numbers"</p>
       </div>
     </div>
   );

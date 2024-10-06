@@ -1,6 +1,6 @@
 'use client';
 
-import { EnergyConsumptionVisualizationComponent } from "@/components/energy-consumption-visualization";
+import {EnergyConsumptionVisualizationComponent} from "@/components/energy-consumption-visualization";
 
 export default function Home() {
   return (
