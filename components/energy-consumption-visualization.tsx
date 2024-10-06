@@ -34,6 +34,7 @@ const energyData = [
   [
     { label: '1 TWh', blocks: 1, color: 'bg-red-300', scale: true },
     { label: 'Meta Cluster (350k H100s, Annual)', value: '~2.15 TWh', blocks: 2.15, color: 'bg-red-300' },
+    { label: 'Nuclear Power Plant (Annual)', value: '~7.88 TWh', blocks: 7.88, color: 'bg-red-300' },
     { label: 'OpenAI 2025 Cluster (Estimate)', value: '~100 TWh', blocks: 100, color: 'bg-red-300' },
   ],
   // Column 5: PWh (Extreme scale)
