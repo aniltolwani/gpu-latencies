@@ -93,24 +93,6 @@ const EnergyItem = ({
   const remainingBlocks = Math.floor(blocks % 100);
   const fractionalPart = blocks % 1;
 
-  // Helper function to determine the appropriate energy unit based on the number of blocks
-  const getUnit = (blocks: number) => {
-    if (blocks >= 1e12) return 'PWh';
-    if (blocks >= 1e9) return 'TWh';
-    if (blocks >= 1e6) return 'GWh';
-    if (blocks >= 1e3) return 'MWh';
-    return 'kWh';
-  };
-
-  // Helper function to format the number of blocks to a fixed decimal place
-  const formatBlocks = (blocks: number) => {
-    if (blocks >= 1e12) return (blocks / 1e12).toFixed(3);
-    if (blocks >= 1e9) return (blocks / 1e9).toFixed(3);
-    if (blocks >= 1e6) return (blocks / 1e6).toFixed(3);
-    if (blocks >= 1e3) return (blocks / 1e3).toFixed(3);
-    return blocks.toFixed(3);
-  };
-
   return (
     <TooltipProvider>
       <Tooltip>
@@ -164,7 +146,7 @@ const EnergyItem = ({
         </TooltipTrigger>
         <TooltipContent>
           <p>
-            {label}: {formatBlocks(blocks)} {getUnit(blocks)}
+            {label}{value ? `: ${value}` : ''}
           </p>
         </TooltipContent>
       </Tooltip>
