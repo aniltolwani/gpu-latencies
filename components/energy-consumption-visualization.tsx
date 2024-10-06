@@ -113,21 +113,25 @@ const EnergyItem = ({
             <div className="flex flex-wrap items-end">
               {blocks >= 100 ? (
                 <>
-                  {/* Render full grids */}
-                  {Array(Math.ceil(fullGrids / 10)).fill(0).map((_, rowIndex) => (
-                    <div key={rowIndex} className="flex flex-wrap w-full mb-1">
-                      {Array(Math.min(10, fullGrids - rowIndex * 10)).fill(0).map((_, i) => (
+                  {/* First row: up to 5 full grids */}
+                  <div className="flex flex-wrap w-full mb-1">
+                    {Array(Math.min(5, fullGrids)).fill(0).map((_, i) => (
+                      <BlockGrid key={i} color={color} count={100} />
+                    ))}
+                  </div>
+                  {/* Second row: remaining full grids and partial grid */}
+                  {fullGrids > 5 && (
+                    <div className="flex flex-wrap w-full">
+                      {Array(fullGrids - 5).fill(0).map((_, i) => (
                         <BlockGrid key={i} color={color} count={100} />
                       ))}
+                      {remainingBlocks > 0 && (
+                        <BlockGrid color={color} count={remainingBlocks} />
+                      )}
+                      {fractionalPart > 0 && (
+                        <PartialBlock fraction={fractionalPart} color={color} />
+                      )}
                     </div>
-                  ))}
-                  {/* Render remaining blocks */}
-                  {remainingBlocks > 0 && (
-                    <BlockGrid color={color} count={remainingBlocks} />
-                  )}
-                  {/* Render fractional part */}
-                  {fractionalPart > 0 && (
-                    <PartialBlock fraction={fractionalPart} color={color} />
                   )}
                 </>
               ) : (
@@ -179,9 +183,8 @@ export function EnergyConsumptionVisualizationComponent() {
       {/* Attribution and source information container */}
       {/* Small, centered text in gray */}
       <div className="mt-8 text-xs text-gray-600 text-center">
-        <p>[github.com/chubin/late.nz] [MIT License]</p>
-        <p>Adapted from &quot;Jeff Dean&apos;s latency numbers&quot;</p>
-        <p>Original: [github.com/colin-scott/interactive_latencies]</p>
+        <p>Inspired by [github.com/chubin/late.nz] [MIT License]</p>
+        <p>And from &quot;Jeff Dean&apos;s latency numbers&quot;</p>
       </div>
     </div>
   );
